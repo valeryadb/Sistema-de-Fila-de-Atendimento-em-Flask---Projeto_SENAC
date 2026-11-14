@@ -1,0 +1,2 @@
+[tool.vercel]
+entrypoint = "projeto-Movida.main:app"
