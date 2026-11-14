@@ -1244,3 +1244,43 @@ Este projeto foi desenvolvido como parte de um processo de aprendizado e prátic
 👉 https://github.com/gabrielsilva798/Sistema-de-Fila-de-Atendimento-em-Flask---Projeto_SENAC.git
 
 Agradeço ao **SENAC**, ao **Farol na Quebrada** e à **Serasa Experian** pela oportunidade, apoio e incentivo durante o desenvolvimento deste projeto, que foi fundamental para nosso crescimento **técnico** e **profissional**.
+
+
+---
+
+## ▶️ Como rodar localmente (atualização 2026)
+
+> **Atualização técnica:** o banco foi migrado de MySQL para **SQLite com um
+> adaptador compatível** (`app/db.py`) — mesma interface do `mysql.connector`,
+> zero dependência de servidor de banco. O arquivo `movida.db` é criado e
+> populado com dados de demonstração na primeira execução. O schema MySQL
+> original permanece em `db_init.sql` como referência.
+
+```bash
+pip install -r requirements.txt
+cd projeto-Movida
+python main.py
+```
+
+Abra `http://127.0.0.1:5000` e entre com a conta de demonstração:
+
+| Campo  | Valor             |
+|--------|-------------------|
+| E-mail | demo@movida.com   |
+| Senha  | demo123           |
+
+## ☁️ Deploy (Render)
+
+Este app usa **Flask-SocketIO** (fila em tempo real) e por isso precisa de um
+servidor persistente — hospedagens serverless (como o Vercel) não o executam.
+No [Render](https://render.com) (gratuito):
+
+1. **New → Blueprint**, aponte para este repositório — o `render.yaml` configura tudo; ou
+2. **New → Web Service** manualmente, com:
+   - Build: `pip install -r requirements.txt`
+   - Start: `gunicorn --chdir projeto-Movida --workers 1 --threads 16 --timeout 120 main:app`
+   - Variável `SECRET_KEY` com um valor aleatório.
+
+> O banco SQLite de demonstração é efêmero no plano gratuito: a cada novo
+> deploy ele renasce com os dados de exemplo — comportamento desejado para
+> uma demo pública.

@@ -1,0 +1,14 @@
+# Blueprint do Render: crie um "New > Blueprint" apontando para o repo
+# e ele monta o serviço sozinho a partir deste arquivo.
+services:
+  - type: web
+    name: fila-atendimento-movida
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --chdir projeto-Movida --workers 1 --threads 16 --timeout 120 main:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true   # o Render gera uma chave aleatória segura
+      - key: PYTHON_VERSION
+        value: 3.12.6

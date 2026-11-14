@@ -12,7 +12,7 @@ import json
 from dotenv import load_dotenv
 from app.utils.gemini_ai import gemini_instrucao_segura
 from app.utils.pandas_ops import executar_operacao
-from mysql.connector import Error
+from app.db import Error  # sqlite3.Error via adaptador (antes: mysql.connector)
 
 # carregar variáveis .env
 load_dotenv()
@@ -253,7 +253,7 @@ def register_routes(app, socketio):
             pos = cnt['pos'] if cnt and cnt.get('pos') is not None else 0
 
             cur.execute("""
-                SELECT AVG(TIMESTAMPDIFF(MINUTE, inicio_atendimento, fim_atendimento)) as media_min
+                SELECT AVG((julianday(fim_atendimento) - julianday(inicio_atendimento)) * 1440) as media_min
                 FROM em_atendimento
                 WHERE empresa_id=%s AND fim_atendimento IS NOT NULL
             """, (reg['empresa_id'],))
@@ -347,7 +347,7 @@ def register_routes(app, socketio):
             SELECT 
                 nome,
                 classificacao,
-                DATE_FORMAT(inicio_atendimento, '%H:%M') AS inicio
+                strftime('%H:%M', inicio_atendimento) AS inicio
             FROM em_atendimento
             WHERE empresa_id=%s AND fim_atendimento IS NULL
             ORDER BY inicio_atendimento ASC
@@ -423,7 +423,7 @@ def register_routes(app, socketio):
 
         # Tempo médio
         cur.execute("""
-            SELECT AVG(TIMESTAMPDIFF(MINUTE, inicio_atendimento, fim_atendimento)) as media_min
+            SELECT AVG((julianday(fim_atendimento) - julianday(inicio_atendimento)) * 1440) as media_min
             FROM em_atendimento
             WHERE empresa_id=%s AND fim_atendimento IS NOT NULL
         """, (reg['empresa_id'],))

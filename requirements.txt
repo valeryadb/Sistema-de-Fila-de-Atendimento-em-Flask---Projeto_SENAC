@@ -1,10 +1,7 @@
-Flask
-Werkzeug
-pandas
-matplotlib
-python-dotenv
-mysql-connector-python
-google-generativeai
-flask-socketio
-eventlet
-gunicorn
+Flask>=3.0
+Werkzeug>=3.0
+pandas>=2.0
+matplotlib>=3.8
+python-dotenv>=1.0
+flask-socketio>=5.3
+gunicorn>=21.0
